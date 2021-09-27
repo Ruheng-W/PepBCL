@@ -17,8 +17,8 @@ from configuration import config as cf
 from util import util_metric
 from train.model_operation import save_model, adjust_model
 from train.visualization import dimension_reduction, penultimate_feature_visulization
-import prot_bert
-import data_loader_protBert
+from model import prot_bert
+from util import data_loader_protBert
 
 import torch
 import torch.nn as nn
