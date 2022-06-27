@@ -244,7 +244,7 @@ def periodic_valid(valid_iter, model, criterion, config, sum_epoch):
     return valid_metric, valid_loss, valid_repres_list, valid_label_list
 
 
-def train_ACP(train_iter, valid_iter, test_iter, model, optimizer, criterion, contras_criterion, config, iter_k):
+def train_model(train_iter, valid_iter, test_iter, model, optimizer, criterion, contras_criterion, config, iter_k):
     best_acc = 0
     best_performance = 0
     train_batch_loss = 0
@@ -499,69 +499,69 @@ def model_eval(data_iter, model, criterion, config):
     return metric, avg_loss, repres_list, label_list, roc_data, prc_data
 
 
-def k_fold_CV(train_iter_orgin, test_iter, config):
-    valid_performance_list = []
+# def k_fold_CV(train_iter_orgin, test_iter, config):
+#     valid_performance_list = []
 
-    for iter_k in range(config.k_fold):
-        print('=' * 50, 'iter_k={}'.format(iter_k + 1), '=' * 50)
+#     for iter_k in range(config.k_fold):
+#         print('=' * 50, 'iter_k={}'.format(iter_k + 1), '=' * 50)
 
-        # Cross validation on training set
-        train_iter = [x for i, x in enumerate(train_iter_orgin) if i % config.k_fold != iter_k]
-        valid_iter = [x for i, x in enumerate(train_iter_orgin) if i % config.k_fold == iter_k]
-        print('----------Data Selection----------')
-        print('train_iter index', [i for i, x in enumerate(train_iter_orgin) if i % config.k_fold != iter_k])
-        print('valid_iter index', [i for i, x in enumerate(train_iter_orgin) if i % config.k_fold == iter_k])
+#         # Cross validation on training set
+#         train_iter = [x for i, x in enumerate(train_iter_orgin) if i % config.k_fold != iter_k]
+#         valid_iter = [x for i, x in enumerate(train_iter_orgin) if i % config.k_fold == iter_k]
+#         print('----------Data Selection----------')
+#         print('train_iter index', [i for i, x in enumerate(train_iter_orgin) if i % config.k_fold != iter_k])
+#         print('valid_iter index', [i for i, x in enumerate(train_iter_orgin) if i % config.k_fold == iter_k])
 
-        print('len(train_iter_orgin)', len(train_iter_orgin))
-        print('len(train_iter)', len(train_iter))
-        print('len(valid_iter)', len(valid_iter))
-        if test_iter:
-            print('len(test_iter)', len(test_iter))
-        print('----------Data Selection Over----------')
+#         print('len(train_iter_orgin)', len(train_iter_orgin))
+#         print('len(train_iter)', len(train_iter))
+#         print('len(valid_iter)', len(valid_iter))
+#         if test_iter:
+#             print('len(test_iter)', len(test_iter))
+#         print('----------Data Selection Over----------')
 
-        if config.model_name == 'ACPred_LAF_Basic':
-            model = ACPred_LAF_Basic.BERT(config)
-        elif config.model_name == 'ACPred_LAF_MSE':
-            model = ACPred_LAF_MSE.BERT(config)
-        elif config.model_name == 'ACPred_LAF_MSC':
-            model = ACPred_LAF_MSC.BERT(config)
-        elif config.model_name == 'ACPred_LAF_MSMC':
-            model = ACPred_LAF_MSMC.BERT(config)
+#         if config.model_name == 'ACPred_LAF_Basic':
+#             model = ACPred_LAF_Basic.BERT(config)
+#         elif config.model_name == 'ACPred_LAF_MSE':
+#             model = ACPred_LAF_MSE.BERT(config)
+#         elif config.model_name == 'ACPred_LAF_MSC':
+#             model = ACPred_LAF_MSC.BERT(config)
+#         elif config.model_name == 'ACPred_LAF_MSMC':
+#             model = ACPred_LAF_MSMC.BERT(config)
 
-        if config.cuda: model.cuda()
-        adjust_model(model)
+#         if config.cuda: model.cuda()
+#         adjust_model(model)
 
-        optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr, weight_decay=config.reg)
-        criterion = nn.CrossEntropyLoss()
-        model.train()
+#         optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr, weight_decay=config.reg)
+#         criterion = nn.CrossEntropyLoss()
+#         model.train()
 
-        print('=' * 50 + 'Start Training' + '=' * 50)
-        valid_performance = train_ACP(train_iter, valid_iter, test_iter, model, optimizer, criterion, config, iter_k)
-        print('=' * 50 + 'Train Finished' + '=' * 50)
+#         print('=' * 50 + 'Start Training' + '=' * 50)
+#         valid_performance = train_model(train_iter, valid_iter, test_iter, model, optimizer, criterion, config, iter_k)
+#         print('=' * 50 + 'Train Finished' + '=' * 50)
 
-        print('=' * 40 + 'Cross Validation iter_k={}'.format(iter_k + 1), '=' * 40)
-        valid_metric, valid_loss, valid_repres_list, valid_label_list, \
-        valid_roc_data, valid_prc_data = model_eval(valid_iter, model, criterion, config)
-        print('[ACC,\tPrecision,\tSensitivity,\tSpecificity,\tF1,\tAUC,\tMCC]')
-        print(valid_metric.numpy())
-        print('=' * 40 + 'Cross Validation Over' + '=' * 40)
+#         print('=' * 40 + 'Cross Validation iter_k={}'.format(iter_k + 1), '=' * 40)
+#         valid_metric, valid_loss, valid_repres_list, valid_label_list, \
+#         valid_roc_data, valid_prc_data = model_eval(valid_iter, model, criterion, config)
+#         print('[ACC,\tPrecision,\tSensitivity,\tSpecificity,\tF1,\tAUC,\tMCC]')
+#         print(valid_metric.numpy())
+#         print('=' * 40 + 'Cross Validation Over' + '=' * 40)
 
-        valid_performance_list.append(valid_performance)
+#         valid_performance_list.append(valid_performance)
 
-        '''draw figure'''
-        draw_figure_CV(config, config.learn_name + '_k[{}]'.format(iter_k + 1))
+#         '''draw figure'''
+#         draw_figure_CV(config, config.learn_name + '_k[{}]'.format(iter_k + 1))
 
-        '''reset plot data'''
-        global step_log_interval, train_acc_record, train_loss_record, \
-            step_valid_interval, valid_acc_record, valid_loss_record
-        step_log_interval = []
-        train_acc_record = []
-        train_loss_record = []
-        step_valid_interval = []
-        valid_acc_record = []
-        valid_loss_record = []
+#         '''reset plot data'''
+#         global step_log_interval, train_acc_record, train_loss_record, \
+#             step_valid_interval, valid_acc_record, valid_loss_record
+#         step_log_interval = []
+#         train_acc_record = []
+#         train_loss_record = []
+#         step_valid_interval = []
+#         valid_acc_record = []
+#         valid_loss_record = []
 
-    return model, valid_performance_list
+#     return model, valid_performance_list
 
 
 def train_test(train_iter, test_iter, config):
@@ -610,7 +610,7 @@ def train_test(train_iter, test_iter, config):
     # model.train()
 
     print('=' * 50 + 'Start Training' + '=' * 50)
-    best_performance = train_ACP(train_iter, None, test_iter, model, optimizer, criterion, contras_criterion, config, 0)
+    best_performance = train_model(train_iter, None, test_iter, model, optimizer, criterion, contras_criterion, config, 0)
     print('=' * 50 + 'Train Finished' + '=' * 50)
 
     print('*' * 60 + 'The Last Test' + '*' * 60)
@@ -689,7 +689,7 @@ def load_config():
        '''
 
     '''Set the required variables in the configuration'''
-    train_name = 'ACPred-LAF'
+    train_name = 'PepBCL'
     path_config_data = None
     path_train_data, path_test_data = select_dataset()
 
@@ -705,15 +705,8 @@ def load_config():
     '''Set other variables'''
     # flooding method
     b = 0.06
-    # model_name = 'ACPred_LAF_Basic'
-    # model_name = 'ACPred_LAF_MSE'
-    # model_name = 'ACPred_LAF_MSC'
-    # model_name = 'ACPred_LAF_MSMC'
 
-    if config.model_name == 'ACPred_LAF_Basic' or config.model_name == 'ACPred_LAF_MSE':
-        config.if_multi_scaled = False
-    else:
-        config.if_multi_scaled = True
+    config.if_multi_scaled = False
 
     '''initialize result folder'''
     result_folder = '../result/' + config.learn_name
@@ -770,9 +763,6 @@ if __name__ == '__main__':
         # torch.save(model, 'bert_finetuned_model.pkl')
         # torch.save(model.state_dict(), 'bert_finetuned_model.pkl')
         pass
-    else:
-        # k cross validation
-        model, valid_performance_list = k_fold_CV(train_iter, None, config)
 
     '''draw figure'''
     draw_figure_train_test(config, config.learn_name)
