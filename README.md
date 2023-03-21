@@ -20,11 +20,11 @@ To facilitate the use of our method, we establish an online predictive platform 
 Users can download our saved model parameters of PepBCL from the following link: https://drive.google.com/drive/folders/1UTZxnR34UaUryKkXRaM0ts3ufjVQtCas. The directory contains two parameter files corresponding to two datasets (Dataset1 and Dataset2). 
 
 For using our saved model parameters, users firstly need to unzip the model parameter file. Then they could easily load the model parameter by the following codes:
-
+```python
 model = prot_bert.BERT(config)                       // model instantiation
 model_dict = torch.load('THE FILE PATH')['model']    // load the state_dict from file path
 model.load_state_dict(model_dict)                    // load the state_dict to model
-
+```
 ## Contact
 
 For further questions or details, reach out to Ruheng Wang (wangruheng@mail.sdu.edu.cn)
