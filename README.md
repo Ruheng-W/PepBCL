@@ -14,6 +14,17 @@ The project is mainly implemented through **Pytorch** and **sklearn**. See requi
 
 
 To facilitate the use of our method, we establish an online predictive platform as the implementation of the proposed PepBCL, which is now available at http://server.wei-group.net/PepBCL/.
+
+## To load model parameters from user-saved state_dict file
+
+Users can download our saved model parameters of PepBCL from the following link: https://drive.google.com/drive/folders/1UTZxnR34UaUryKkXRaM0ts3ufjVQtCas. The directory contains two parameter files corresponding to two datasets (Dataset1 and Dataset2). 
+
+For using our saved model parameters, users firstly need to unzip the model parameter file. Then they could easily load the model parameter by the following codes:
+
+model = prot_bert.BERT(config)                       // model instantiation
+model_dict = torch.load('THE FILE PATH')['model']    // load the state_dict from file path
+model.load_state_dict(model_dict)                    // load the state_dict to model
+
 ## Contact
 
 For further questions or details, reach out to Ruheng Wang (wangruheng@mail.sdu.edu.cn)
