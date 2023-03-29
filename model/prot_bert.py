@@ -47,19 +47,19 @@ class BERT(nn.Module):
         self.block1 = nn.Sequential(
             nn.Linear(1024, 512),
             # nn.BatchNorm1d(512),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(512, 256),
         )
 
         self.block2 = nn.Sequential(
             # nn.BatchNorm1d(256),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(256, 128),
             # nn.BatchNorm1d(128),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(128, 64),
             # nn.BatchNorm1d(64),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(64, 2)
         )
     def attention(self, input, q):
